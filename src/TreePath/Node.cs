@@ -47,13 +47,7 @@ namespace TreePath.Unit.Tests
 				AddCombinatorialNodes(leafNodes);
 				return null;
 			}
-			else if (HasCombinatorialNodes(leafNodes))
-			{
-				
-				AddDualLeafNodes(leafNodes);
-				return null;
-
-			}
+		
 
 			
 			return AddSingleLeafNode(path, nodeValue);
