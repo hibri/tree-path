@@ -1,5 +1,6 @@
-﻿using NUnit.Framework;
-
+﻿using System.Collections.Generic;
+using NUnit.Framework;
+using System.Linq;
 namespace TreePath.Unit.Tests
 {
 	[TestFixture]
@@ -72,7 +73,49 @@ namespace TreePath.Unit.Tests
 			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].GetChildren()[0].ToString(), Is.EqualTo("NFL"));
 			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].GetChildren()[1].ToString(), Is.EqualTo("NCAA"));
 
+		}
+
+		[Test]
+		public void Should_support_combinatorial_leaf_node_insert() {
+			var rootNode = new Node("/");
+			rootNode.AddPath("/home/music/rap|rock|pop");
+
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rock");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "pop");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap-rock");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap-pop");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rock-pop");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap-rock-pop");
+			
+		}
+
+		private static void AssertNodeExists(IList<Node> nodes, string expected) {
+			
+			Assert.That(nodes.Single(n => n.ToString() == expected) , Is.Not.Null);
+		}
+
+
+		[Test]
+		public void Should_build_a_combination_from_an_array() {
+
+			string[] combinations = new Combinations().FromArray(new string[] {"rap", "rock","pop"});
+
+			Assert.That(combinations, Contains.Item("rap"));
+			Assert.That(combinations, Contains.Item("rock"));
+			Assert.That(combinations, Contains.Item("pop"));
+
+
+			Assert.That(combinations, Contains.Item("rap-rock"));
+			Assert.That(combinations, Contains.Item("rap-pop"));
+			Assert.That(combinations, Contains.Item("rap-rock-pop"));
+
 
 		}
+
+
+
     }
+
+
 }
