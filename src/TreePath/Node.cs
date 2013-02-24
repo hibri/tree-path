@@ -30,9 +30,7 @@ namespace TreePath.Unit.Tests
 		}
 
 		public Node AddPath(string path) {
-			string[] pathElements = path.Split('/');
-		
-			string nodeValue = pathElements[1];
+			var nodeValue = GetFirstPathElement(path);
 
 			var newNode = new Node(nodeValue);
 
@@ -42,6 +40,13 @@ namespace TreePath.Unit.Tests
 				childNode.AddPath(nextNodePath);
 			}
 			return newNode;
+		}
+
+		private static string GetFirstPathElement(string path) {
+			string[] pathElements = path.Split('/');
+
+			string nodeValue = pathElements[1];
+			return nodeValue;
 		}
 	}
 }
