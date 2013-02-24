@@ -56,9 +56,21 @@ namespace TreePath.Unit.Tests
 			Assert.That(rootNode.GetChildren()[0].GetChildren()[1].GetChildren()[1].ToString(), Is.EqualTo("rock"));
 			Assert.That(rootNode.GetChildren()[0].GetChildren()[1].GetChildren()[0].GetChildren()[0].ToString(), Is.EqualTo("gangster"));
 
+		}
 
+		[Test]
+		public void Should_support_dual_leaf_nodes() {
+			var rootNode = new Node("/");
+			rootNode.AddPath("/home/sports/basketball");
+			rootNode.AddPath("/home/sports/football");
+			rootNode.AddPath("/home/sports/basketball/NCAA");
+			rootNode.AddPath("/home/sports/football/NFL|NCAA");
 
-
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].ToString(), Is.EqualTo("sports"));
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[0].ToString(), Is.EqualTo("basketball"));
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].ToString(), Is.EqualTo("football"));
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].GetChildren()[0].ToString(), Is.EqualTo("NFL"));
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].GetChildren()[1].ToString(), Is.EqualTo("NCAA"));
 
 
 		}
