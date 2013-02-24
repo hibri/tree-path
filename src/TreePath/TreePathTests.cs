@@ -67,32 +67,51 @@ namespace TreePath.Unit.Tests
 			rootNode.AddPath("/home/sports/basketball/NCAA");
 			rootNode.AddPath("/home/sports/football/NFL|NCAA");
 
-			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].ToString(), Is.EqualTo("sports"));
-			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[0].ToString(), Is.EqualTo("basketball"));
-			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].ToString(), Is.EqualTo("football"));
-			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].GetChildren()[0].ToString(), Is.EqualTo("NFL"));
-			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].GetChildren()[1].ToString(), Is.EqualTo("NCAA"));
+			Assert.That(rootNode.GetChildren()[0].FindNode("sports"), Is.Not.Null);
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].FindNode("basketball"), Is.Not.Null);
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].FindNode("football"), Is.Not.Null);
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].FindNode("NFL"), Is.Not.Null);
+			Assert.That(rootNode.GetChildren()[0].GetChildren()[0].GetChildren()[1].FindNode("NCAA"), Is.Not.Null);
 
 		}
+
+		
 
 		[Test]
 		public void Should_support_combinatorial_leaf_node_insert() {
 			var rootNode = new Node("/");
 			rootNode.AddPath("/home/music/rap|rock|pop");
 
-			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap");
-			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rock");
-			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "pop");
-			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap-rock");
-			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap-pop");
-			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rock-pop");
-			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0].GetChildren(), "rap-rock-pop");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0], "rap");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0], "rock");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0], "pop");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0], "rap-rock");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0], "rap-pop");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0], "rock-pop");
+			AssertNodeExists(rootNode.GetChildren()[0].GetChildren()[0], "rap-rock-pop");
 			
 		}
 
-		private static void AssertNodeExists(IList<Node> nodes, string expected) {
+		[Test]
+		public void Should_support_combinatorial_leafs_at_any_level() {
+			var rootNode = new Node("/");
+			rootNode.AddPath("/home/sports|music/misc|favorites");
+
+			AssertNodeExists(rootNode.FindNode("home"), "sports");
+			AssertNodeExists(rootNode.FindNode("home"), "music");
+
+			AssertNodeExists(rootNode.FindNode("home").FindNode("music"), "misc");
+			AssertNodeExists(rootNode.FindNode("home").FindNode("music"), "favorites");
+			AssertNodeExists(rootNode.FindNode("home").FindNode("music"), "misc-favorites");
+
+
+
 			
-			Assert.That(nodes.Single(n => n.ToString() == expected) , Is.Not.Null);
+		}
+
+		private static void AssertNodeExists(Node node, string expected) {
+			
+			Assert.That(node.FindNode(expected) , Is.Not.Null,"Expected to find node with value {0} but did not",expected);
 		}
 
 

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace TreePath.Unit.Tests
 {
@@ -32,39 +32,60 @@ namespace TreePath.Unit.Tests
 
 		public Node AddPath(string path) {
 			string nodeValue = GetFirstPathElement(path);
-
+			string nextNodePath = GetNextNodePath(path, nodeValue);
 			string[] leafNodes = nodeValue.Split('|');
-			if (HasDualLeafNodes(leafNodes)) {
-				AddDualLeafNodes(leafNodes);
+			if (HasDualLeafNodes(leafNodes) && HasMoreNodesInPath(nextNodePath)) {
+				AddCombinatorialNodes(leafNodes);
+ 				foreach (var child in _children) {
+
+ 					child.AddPath(nextNodePath);
+ 				}
 				return null;
 			}
-			if (HasCombinatorialNodes(leafNodes)) {
+			else if (HasCombinatorialNodes(leafNodes)) {
 				AddCombinatorialNodes(leafNodes);
 				return null;
 			}
+			else if(HasDualLeafNodes(leafNodes)) {
+				
+				AddDualLeafNodes(leafNodes);
+				return null;
+
+			}
+
+			
 			return AddSingleLeafNode(path, nodeValue);
 		}
 
-		private void AddCombinatorialNodes(string[] leafNodes) {
+		public void AddCombinatorialNodes(string[] leafNodes) {
 			string[] leafNodeCombinations = new Combinations().FromArray(leafNodes);
-			foreach (var leafNode in leafNodeCombinations) {
+			foreach (string leafNode in leafNodeCombinations) {
 				AddChild(new Node(leafNode));
 			}
 		}
 
 		private bool HasCombinatorialNodes(string[] leafNodes) {
-			return leafNodes.Length > 2;
+			return leafNodes.Length > 1;
 		}
 
 		private Node AddSingleLeafNode(string path, string nodeValue) {
 			var newNode = new Node(nodeValue);
 
 			Node childNode = AddChild(newNode);
-			string nextNodePath = path.Remove(0, +nodeValue.Length + 1);
-			if (nextNodePath.Length > 1) {
+			var nextNodePath = GetNextNodePath(path, nodeValue);
+			if (HasMoreNodesInPath(nextNodePath)) {
 				childNode.AddPath(nextNodePath);
 			}
 			return newNode;
+		}
+
+		private static bool HasMoreNodesInPath(string nextNodePath) {
+			return nextNodePath.Length > 1;
+		}
+
+		private static string GetNextNodePath(string path, string nodeValue) {
+			string nextNodePath = path.Remove(0, +nodeValue.Length + 1);
+			return nextNodePath;
 		}
 
 		private void AddDualLeafNodes(string[] dualLeafNodes) {
@@ -74,7 +95,7 @@ namespace TreePath.Unit.Tests
 		}
 
 		private static bool HasDualLeafNodes(string[] dualLeafNodes) {
-			return dualLeafNodes.Length == 2;
+			return dualLeafNodes.Length > 1;
 		}
 
 		private static string GetFirstPathElement(string path) {
@@ -83,26 +104,9 @@ namespace TreePath.Unit.Tests
 			string nodeValue = pathElements[1];
 			return nodeValue;
 		}
-	}
 
-	public class Combinations
-	{
-		public string[] FromArray(string[] strings) {
-			List<string> combinations = new List<string>();
-			for (int index = 0; index < strings.Length; index++) {
-				combinations.Add(strings[index] );
-				for (int index2 = index+1; index2 < strings.Length; index2++) {
-					combinations.Add(strings[index] +"-"+ strings[index2]);
-					for (int index3 = index2 + 1; index3 < strings.Length; index3++) {
-						combinations.Add(strings[index] + "-" + strings[index2] +"-" + strings[index3]);
-					}
-				}
-				
-			}
-			 
-			combinations.Sort();
-			combinations.Reverse();
-			return combinations.ToArray();
+		public  Node FindNode(string nodeValue) {
+			return _children.SingleOrDefault(n => n.ToString() == nodeValue);
 		}
 	}
 }
