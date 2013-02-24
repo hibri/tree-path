@@ -15,25 +15,33 @@ namespace TreePath.Unit.Tests
 			return _nodeValue;
 		}
 
-		public void AddChild(Node node) {
+		public Node AddChild(Node node) {
+			foreach (var child in _children) {
+				if (child.ToString() == node.ToString()) {
+					return child;
+				}
+			}
 			_children.Add(node);
+			return node;
 		}
 
 		public IList<Node> GetChildren() {
 			return _children;
 		}
 
-		public static Node BuildTree(string path) {
+		public Node AddPath(string path) {
 			string[] pathElements = path.Split('/');
 		
-			string rootNodeValue = pathElements[1];
+			string nodeValue = pathElements[1];
 
-			var rootNode = new Node(rootNodeValue);
-			var nextNodePath = path.Remove(0, + rootNodeValue.Length + 1);
+			var newNode = new Node(nodeValue);
+
+			var childNode = AddChild(newNode);
+			var nextNodePath = path.Remove(0, + nodeValue.Length + 1);
 			if (nextNodePath.Length > 1) {
-				rootNode.AddChild(Node.BuildTree(nextNodePath));
+				childNode.AddPath(nextNodePath);
 			}
-			return rootNode;
+			return newNode;
 		}
 	}
 }
