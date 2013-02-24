@@ -104,6 +104,15 @@ namespace TreePath.Unit.Tests
 			AssertNodeExists(rootNode.FindNode("home").FindNode("music"), "favorites");
 			AssertNodeExists(rootNode.FindNode("home").FindNode("music"), "misc-favorites");
 
+			AssertNodeExists(rootNode.FindNode("home").FindNode("sports"), "misc");
+			AssertNodeExists(rootNode.FindNode("home").FindNode("sports"), "favorites");
+			AssertNodeExists(rootNode.FindNode("home").FindNode("sports"), "misc-favorites");
+
+
+			AssertNodeExists(rootNode.FindNode("home").FindNode("sports-music"), "misc");
+			AssertNodeExists(rootNode.FindNode("home").FindNode("sports-music"), "favorites");
+			AssertNodeExists(rootNode.FindNode("home").FindNode("sports-music"), "misc-favorites");
+
 
 
 			
