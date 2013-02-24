@@ -34,7 +34,8 @@ namespace TreePath.Unit.Tests
 			string nodeValue = GetFirstPathElement(path);
 			string nextNodePath = GetNextNodePath(path, nodeValue);
 			string[] leafNodes = nodeValue.Split('|');
-			if (HasDualLeafNodes(leafNodes) && HasMoreNodesInPath(nextNodePath)) {
+			if (HasCombinatorialNodes(leafNodes) && HasMoreNodesInPath(nextNodePath))
+			{
 				AddCombinatorialNodes(leafNodes);
  				foreach (var child in _children) {
 
@@ -46,7 +47,8 @@ namespace TreePath.Unit.Tests
 				AddCombinatorialNodes(leafNodes);
 				return null;
 			}
-			else if(HasDualLeafNodes(leafNodes)) {
+			else if (HasCombinatorialNodes(leafNodes))
+			{
 				
 				AddDualLeafNodes(leafNodes);
 				return null;
@@ -92,10 +94,6 @@ namespace TreePath.Unit.Tests
 			foreach (string value in dualLeafNodes) {
 				AddChild(new Node(value));
 			}
-		}
-
-		private static bool HasDualLeafNodes(string[] dualLeafNodes) {
-			return dualLeafNodes.Length > 1;
 		}
 
 		private static string GetFirstPathElement(string path) {
