@@ -22,5 +22,18 @@ namespace TreePath.Unit.Tests
 		public IList<Node> GetChildren() {
 			return _children;
 		}
+
+		public static Node BuildTree(string path) {
+			string[] pathElements = path.Split('/');
+		
+			string rootNodeValue = pathElements[1];
+
+			var rootNode = new Node(rootNodeValue);
+			var nextNodePath = path.Remove(0, + rootNodeValue.Length + 1);
+			if (nextNodePath.Length > 1) {
+				rootNode.AddChild(Node.BuildTree(nextNodePath));
+			}
+			return rootNode;
+		}
 	}
 }
